@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: org.example.junit.service.UserServiceTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.059 s <<< FAILURE! - in org.example.junit.service.UserServiceTest
+test  Time elapsed: 0.041 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.example.junit.service.UserServiceTest.test(UserServiceTest.java:12)
+
