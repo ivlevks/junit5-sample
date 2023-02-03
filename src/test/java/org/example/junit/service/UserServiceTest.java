@@ -1,12 +1,15 @@
 package org.example.junit.service;
 
 import org.example.junit.dto.User;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
 
+import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserServiceTest {
@@ -29,7 +32,10 @@ public class UserServiceTest {
     void usersEmptyIfNoUsersAdded() {
         System.out.println("Test1 " + this);
         var users = userService.getAll();
-        assertTrue(users.isEmpty());
+
+        //assertJ
+        assertThat(users).isEmpty();
+//        assertTrue(users.isEmpty());
     }
 
     @Test
@@ -39,7 +45,11 @@ public class UserServiceTest {
         userService.add(PETR);
 
         var users = userService.getAll();
-        assertEquals(2, users.size());
+
+        //assertJ
+        assertThat(users).hasSize(2);
+        //Junit
+//        assertEquals(2, users.size());
     }
 
     @Test
@@ -47,8 +57,12 @@ public class UserServiceTest {
         userService.add(IVAN);
         Optional<User> maybeUser = userService.login(IVAN.getUsername(), IVAN.getPassword());
 
-        assertTrue(maybeUser.isPresent());
-        maybeUser.ifPresent(user -> assertEquals(IVAN, user));
+        //assertJ
+        assertThat(maybeUser).isPresent();
+        maybeUser.ifPresent(user -> assertThat(user).isEqualTo(IVAN));
+
+//        assertTrue(maybeUser.isPresent());
+//        maybeUser.ifPresent(user -> assertEquals(IVAN, user));
     }
 
     @Test
@@ -56,7 +70,9 @@ public class UserServiceTest {
         userService.add(IVAN);
         Optional<User> maybeUser = userService.login(IVAN.getUsername(), "wrong password");
 
-        assertTrue(maybeUser.isEmpty());
+        assertThat(maybeUser).isEmpty();
+
+//        assertTrue(maybeUser.isEmpty());
     }
 
     @Test
@@ -64,7 +80,24 @@ public class UserServiceTest {
         userService.add(IVAN);
         Optional<User> maybeUser = userService.login("not Ivan", "wrong password");
 
-        assertTrue(maybeUser.isEmpty());
+        assertThat(maybeUser).isEmpty();
+
+//        assertTrue(maybeUser.isEmpty());
+    }
+    @Test
+    void usersConvertedToMapById() {
+        userService.add(IVAN, PETR);
+
+        Map<Integer, User> users = userService.getAllConvertedById();
+
+        //hamcrest
+        MatcherAssert.assertThat(users, IsMapContaining.hasKey(IVAN.getId()));
+
+        //assertJ
+        assertAll(
+                () -> assertThat(users).containsKeys(IVAN.getId(), PETR.getId()),
+                () -> assertThat(users).containsValues(IVAN, PETR)
+        );
     }
 
     @AfterEach

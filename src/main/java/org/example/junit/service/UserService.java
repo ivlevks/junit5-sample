@@ -2,10 +2,10 @@ package org.example.junit.service;
 
 import org.example.junit.dto.User;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class UserService {
     private final List<User> users = new ArrayList<>();
@@ -14,8 +14,8 @@ public class UserService {
         return users;
     }
 
-    public boolean add(User user) {
-        return users.add(user);
+    public void add(User... user) {
+        this.users.addAll(Arrays.asList(user));
     }
 
     public Optional<User> login(String username, String password) {
@@ -23,5 +23,10 @@ public class UserService {
                 .filter(user -> user.getUsername().equals(username))
                 .filter(user -> user.getPassword().equals(password))
                 .findFirst();
+    }
+
+    public Map<Integer, User> getAllConvertedById() {
+        return users.stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
     }
 }
