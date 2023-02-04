@@ -54,50 +54,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @Tag("login")
-    void loginSuccessIfUserExist() {
-        userService.add(IVAN);
-        Optional<User> maybeUser = userService.login(IVAN.getUsername(), IVAN.getPassword());
-
-        //assertJ
-        assertThat(maybeUser).isPresent();
-        maybeUser.ifPresent(user -> assertThat(user).isEqualTo(IVAN));
-
-//        assertTrue(maybeUser.isPresent());
-//        maybeUser.ifPresent(user -> assertEquals(IVAN, user));
-    }
-
-    @Test
-    @Tag("login")
-    void throwExceptionIfUsernameOrPasswordIsNull() {
-        assertAll(
-                () -> assertThrows(IllegalArgumentException.class, () -> userService.login(null, "dummy")),
-                () -> assertThrows(IllegalArgumentException.class, () -> userService.login("Ivan", null))
-        );
-    }
-
-    @Test
-    @Tag("login")
-    void logicFailIfPasswordIncorrect() {
-        userService.add(IVAN);
-        Optional<User> maybeUser = userService.login(IVAN.getUsername(), "wrong password");
-
-        assertThat(maybeUser).isEmpty();
-
-//        assertTrue(maybeUser.isEmpty());
-    }
-
-    @Test
-    @Tag("login")
-    void logicFailIfUserNotExist() {
-        userService.add(IVAN);
-        Optional<User> maybeUser = userService.login("not Ivan", "wrong password");
-
-        assertThat(maybeUser).isEmpty();
-
-//        assertTrue(maybeUser.isEmpty());
-    }
-    @Test
     void usersConvertedToMapById() {
         userService.add(IVAN, PETR);
 
@@ -116,6 +72,52 @@ public class UserServiceTest {
     @AfterEach
     void deleteData() {
         System.out.println("After each " + this);
+    }
+
+    @Nested
+    @Tag("login")
+    class LoginTest {
+
+        @Test
+        void loginSuccessIfUserExist() {
+            userService.add(IVAN);
+            Optional<User> maybeUser = userService.login(IVAN.getUsername(), IVAN.getPassword());
+
+            //assertJ
+            assertThat(maybeUser).isPresent();
+            maybeUser.ifPresent(user -> assertThat(user).isEqualTo(IVAN));
+
+//        assertTrue(maybeUser.isPresent());
+//        maybeUser.ifPresent(user -> assertEquals(IVAN, user));
+        }
+
+        @Test
+        void throwExceptionIfUsernameOrPasswordIsNull() {
+            assertAll(
+                    () -> assertThrows(IllegalArgumentException.class, () -> userService.login(null, "dummy")),
+                    () -> assertThrows(IllegalArgumentException.class, () -> userService.login("Ivan", null))
+            );
+        }
+
+        @Test
+        void logicFailIfPasswordIncorrect() {
+            userService.add(IVAN);
+            Optional<User> maybeUser = userService.login(IVAN.getUsername(), "wrong password");
+
+            assertThat(maybeUser).isEmpty();
+
+//        assertTrue(maybeUser.isEmpty());
+        }
+
+        @Test
+        void logicFailIfUserNotExist() {
+            userService.add(IVAN);
+            Optional<User> maybeUser = userService.login("not Ivan", "wrong password");
+
+            assertThat(maybeUser).isEmpty();
+
+//        assertTrue(maybeUser.isEmpty());
+        }
     }
 
 }
