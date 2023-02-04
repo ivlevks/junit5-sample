@@ -1,9 +1,12 @@
 package org.example.junit.service;
 
 import org.example.junit.dto.User;
+import org.example.junit.paramresolver.UserServiceParamResolver;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ParameterResolver;
 
 import java.util.Map;
 import java.util.Optional;
@@ -13,10 +16,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("fast")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith({
+        UserServiceParamResolver.class
+})
 public class UserServiceTest {
     private static final User IVAN = User.of(1, "Ivan", "123");
     private static final User PETR = User.of(2, "Petr", "222");
     private UserService userService;
+
+    public UserServiceTest(TestInfo testInfo) {
+        System.out.println();
+    }
 
     @BeforeAll
     void init() {
@@ -24,9 +34,9 @@ public class UserServiceTest {
     }
 
     @BeforeEach
-    void prepare() {
+    void prepare(UserService userService) {
         System.out.println("Before each " + this);
-        userService = new UserService();
+        this.userService = userService;
     }
 
     @Test
