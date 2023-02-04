@@ -19,7 +19,7 @@ public class TestLauncher {
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder
                 .request()
                 .selectors(DiscoverySelectors.selectClass(UserServiceTest.class))
-                .filters(TagFilter.includeTags("login"))
+//                .filters(TagFilter.includeTags("login"))
                 .build();
 
         launcher.execute(request, listener);
