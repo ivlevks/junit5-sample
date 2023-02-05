@@ -1,5 +1,6 @@
 package org.example.junit.service;
 
+import org.example.junit.dao.UserDao;
 import org.example.junit.dto.User;
 
 import java.lang.reflect.Array;
@@ -9,6 +10,15 @@ import java.util.stream.Collectors;
 
 public class UserService {
     private final List<User> users = new ArrayList<>();
+    private final UserDao userDao;
+
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public boolean delete(Integer userId) {
+        return userDao.delete(userId);
+    }
 
     public List<User> getAll() {
         return users;
