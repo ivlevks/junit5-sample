@@ -1,12 +1,12 @@
 package org.example.junit.service;
 
 import org.example.junit.dto.User;
-import org.example.junit.paramresolver.UserServiceParamResolver;
+import org.example.junit.extension.GlobalExtension;
+import org.example.junit.extension.UserServiceParamResolver;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 
@@ -21,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("fast")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith({
-        UserServiceParamResolver.class
+        UserServiceParamResolver.class,
+        GlobalExtension.class
 })
 public class UserServiceTest {
     private static final User IVAN = User.of(1, "Ivan", "123");
