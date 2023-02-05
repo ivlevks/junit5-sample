@@ -7,9 +7,13 @@ import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.*;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,6 +54,8 @@ public class UserServiceTest {
     }
 
     @Test
+    //тест отключен
+    @Disabled("flaky, need to see")
     void userSizeIfUserAdded() {
         System.out.println("Test2 " + this);
         userService.add(IVAN);
@@ -63,7 +69,8 @@ public class UserServiceTest {
 //        assertEquals(2, users.size());
     }
 
-    @Test
+    // тест повторяется 3 раза
+    @RepeatedTest(value = 3, name = RepeatedTest.LONG_DISPLAY_NAME)
     void usersConvertedToMapById() {
         userService.add(IVAN, PETR);
 
@@ -86,6 +93,7 @@ public class UserServiceTest {
 
     @Nested
     @Tag("login")
+    @Timeout(value = 200, unit = TimeUnit.MILLISECONDS)
     class LoginTest {
 
         @Test
@@ -128,6 +136,29 @@ public class UserServiceTest {
 
 //        assertTrue(maybeUser.isEmpty());
         }
+
+        @ParameterizedTest(name = "{arguments} test")
+//        @ArgumentsSource()
+//        @NullSource
+//        @EmptySource
+//        @ValueSource(strings = {
+//                "Ivan", "Petr"
+//        })
+        @MethodSource("org.example.junit.service.UserServiceTest#getArgumentsForLoginTest")
+        void loginParametrizedTest(String username, String password, Optional<User> user) {
+            userService.add(IVAN, PETR);
+            Optional<User> maybeUser = userService.login(username, password);
+            assertThat(maybeUser).isEqualTo(user);
+        }
+    }
+
+    static Stream<Arguments> getArgumentsForLoginTest() {
+        return Stream.of(
+                Arguments.of("Ivan", "123", Optional.of(IVAN)),
+                Arguments.of("Petr", "222", Optional.of(PETR)),
+                Arguments.of("Petr", "dummy", Optional.empty()),
+                Arguments.of("dummy", "222", Optional.empty())
+        );
     }
 
 }
