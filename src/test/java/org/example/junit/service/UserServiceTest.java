@@ -10,7 +10,10 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
 import java.util.Optional;
@@ -24,12 +27,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith({
         UserServiceParamResolver.class,
-        GlobalExtension.class
+        GlobalExtension.class,
+        MockitoExtension.class
 })
 public class UserServiceTest {
     private static final User IVAN = User.of(1, "Ivan", "123");
     private static final User PETR = User.of(2, "Petr", "222");
+
+    @InjectMocks
     private UserService userService;
+    @Mock
     private UserDao userDao;
 
     public UserServiceTest(TestInfo testInfo) {
@@ -45,8 +52,8 @@ public class UserServiceTest {
     void prepare() {
         System.out.println("Before each " + this);
 //        this.userDao = Mockito.mock(UserDao.class);
-        this.userDao = Mockito.spy(new UserDao());
-        this.userService = new UserService(userDao);
+//        this.userDao = Mockito.spy(new UserDao());
+//        this.userService = new UserService(userDao);
     }
 
     @Test
